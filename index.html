@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Data collection Form</title>
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.css" />
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1 class="brand"><span>Daniel</span> Njeru</h1>
+    <div class="wrapper">
+      <div class="company-info">
+        <h3>Daniel Njeru</h3>
+        <ul>
+          <li><i class="fa fa-phone"></i> (254)0727305757</li>
+          <li><i class="fa fa-phone"></i> (555) 555-5555</li>
+          <li><i class="fa fa-envelope"></i> wamutheechief@gmail.com</li>
+        </ul>
+      </div>
+      <div class="contact">
+        <h3>Patient Details</h3>
+        <div class="alert">Your message has been sent</div>
+        <form id="contactForm">
+          <p>
+            <label>First Name</label>
+            <input type="text" name="name" id="fname" required>
+          </p>
+          <p>
+            <label>Last Name</label>
+            <input type="text" name="name" id="lname" required>
+          </p>
+          <p>
+            <label>Gender</label>
+           <select name="gender" id="gender">
+  <option value="male">Male</option>
+  <option value="female">Female</option>
+  <option value="other">Other</option>
+</select>
+          </p>
+          <p>
+            <label>Disease</label>
+            <input type="text" name="disease" id="disease">
+          </p>
+          <p>
+            <label>Age</label>
+            <input type="number" name="age" id="age">
+          </p>
+          <p>
+            <label>Weight(kgs)</label>
+            <input type="number" name="weight" id="weight">
+          </p>
+          <p>
+            <label>Height(cm)</label>
+            <input type="number" name="height" id="height">
+          </p>
+          <p>
+            <label>Blood Group</label>
+            <input type="text" name="bgroup" id="bgroup">
+          </p>
+          <p class="full">
+            <label>Message</label>
+            <textarea name="message" rows="5" id="comment"></textarea>
+          </p>
+          <p class="full">
+            <button type="submit">Submit</button>
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.9.3/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.9.3/firebase-analytics.js";
+    import { getDatabase, onValue, ref, set }  from   "https://www.gstatic.com/firebasejs/9.9.3/firebase-database.js";
+  
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+  
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+      apiKey: "AIzaSyC6C1HW5J98v7SV9w4D4NduEFafF_EcgkE",
+      authDomain: "daniel-patient-details.firebaseapp.com",
+      databaseURL: "https://daniel-patient-details-default-rtdb.firebaseio.com",
+      projectId: "daniel-patient-details",
+      storageBucket: "daniel-patient-details.appspot.com",
+      messagingSenderId: "109275173893",
+      appId: "1:109275173893:web:08dd8dfe998b29ac0ef86c",
+      measurementId: "G-2L2FTJD2K3"
+    };
+     
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const database = getDatabase();
+  
+   
+    var messageRef = ref(database, 'patient details/');
+// Listen for form submit
+document.getElementById('contactForm').addEventListener('submit', submitForm);
+
+// Submit form
+function submitForm(e){
+  e.preventDefault();
+
+  // Get values
+  var fname = getInputVal('fname');
+  var lname = getInputVal('lname');
+  var gender = getInputVal('gender');
+  var disease = getInputVal('disease');
+  var age = getInputVal('age');
+  var weight = getInputVal('weight');
+  var height = getInputVal('height');
+  var bgroup = getInputVal('bgroup');
+  var comment = getInputVal('comment');
+  
+  console.log(fname,lname);
+
+  saveMessage(fname,lname,gender,disease,age,weight,height,bgroup,comment);
+   // Show alert
+   document.querySelector('.alert').style.display = 'block';
+
+   // Hide alert after 3 seconds
+   setTimeout(function(){
+     document.querySelector('.alert').style.display = 'none';
+   },3000);
+ 
+   // Clear form
+   document.getElementById('contactForm').reset();
+}
+
+// Function to get get form values
+function getInputVal(id){
+  return document.getElementById(id).value;
+}
+
+//save message
+ function saveMessage(fname,lname,gender,disease,age,weight,height,bgroup,comment){
+    
+    set(messageRef, {
+     fname : fname,
+     lname : lname,
+     gender : gender,
+     disease : disease,
+     age : age,
+     weight : weight,
+     height : height,
+     bgroup : bgroup,
+     comment : comment,
+    });
+ }
+
+ const alldata= ref(database,'patient details');
+ onValue(alldata, (snapshot) => {
+  const data= snapshot.val();
+  console.log(data);
+ })
+// Save message to firebase
+  </script>
+
+    <!--<script src="main.js"></script>-->
+</body>
+</html>
